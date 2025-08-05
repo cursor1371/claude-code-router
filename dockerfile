@@ -26,4 +26,4 @@ RUN pnpm run build
 EXPOSE 3456
 
 # 容器的启动命令，改为执行我们的启动脚本
-CMD ["./start-render.sh"]
+CMD ["/bin/sh", "./start-render.sh"]
