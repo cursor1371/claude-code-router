@@ -2,23 +2,28 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy all files
+# 将我们新创建的启动脚本复制到容器中
+COPY start-render.sh .
+# 赋予该脚本可执行权限
+RUN chmod +x start-render.sh
+
+# 复制所有其他项目文件
 COPY . .
 
-# Install pnpm globally
+# 安装 pnpm
 RUN npm install -g pnpm
 
-# Install dependencies
+# 安装后端依赖
 RUN pnpm install --frozen-lockfile
 
-# Fix rollup optional dependencies issue
+# 修复 rollup 可选依赖问题并安装前端依赖
 RUN cd ui && npm install
 
-# Build the entire project including UI
+# 构建整个项目（后端+前端）
 RUN pnpm run build
 
-# Expose port
+# 暴露服务端口
 EXPOSE 3456
 
-# Start the router service
-CMD ["node", "dist/cli.js", "start"]
+# 容器的启动命令，改为执行我们的启动脚本
+CMD ["./start-render.sh"]
